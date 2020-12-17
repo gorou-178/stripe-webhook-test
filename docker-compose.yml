@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ./build/php/Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - web
+    volumes:
+      - ./src:/var/www/html
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    networks:
+      - web
+    volumes:
+      - ./build/stripe/config.toml:/root/.config/stripe/config.toml
+    command: listen --forward-to php:8000
+networks:
+  web:
